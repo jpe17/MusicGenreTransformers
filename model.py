@@ -13,7 +13,8 @@ class WhisperAudioClassifier(nn.Module):
             device (torch.device or str, optional): The device to load the model on.
         """
         super().__init__()
-        self.whisper_model = whisper.load_model(whisper_model_name, device = device)
+        # Load Whisper model on CPU first to avoid MPS sparse tensor issues
+        self.whisper_model = whisper.load_model(whisper_model_name, device="cpu")
         
         # We only need the encoder part of the Whisper model.
         self.encoder = self.whisper_model.encoder

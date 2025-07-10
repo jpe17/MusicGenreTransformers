@@ -140,7 +140,7 @@ def train(model, train_loader, val_loader, epochs, learning_rate, device, model_
 
 if __name__ == '__main__':
     # --- Configuration ---
-    EPOCHS = 10
+    EPOCHS = 100
     LEARNING_RATE = 0.0001
     BATCH_SIZE = 8  # Further reduced for Whisper + raw audio processing
     MODEL_SAVE_PATH = 'music_genre_classifier.pth'
