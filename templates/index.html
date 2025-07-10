@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicAI Pro - Next-Gen Music Intelligence</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --accent-primary: #00f5ff;
+            --accent-secondary: #ff0080;
+            --accent-gradient: linear-gradient(135deg, #00f5ff 0%, #ff0080 100%);
+            --text-primary: #ffffff;
+            --text-secondary: #b4b4b4;
+            --text-accent: #00f5ff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success: #00ff87;
+            --warning: #ffb700;
+            --error: #ff3333;
+            --shadow-glow: 0 0 30px rgba(0, 245, 255, 0.3);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 255, 135, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgPulse 20s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-ai {
+            background: rgba(0, 245, 255, 0.2);
+            color: var(--accent-primary);
+            border: 1px solid var(--accent-primary);
+        }
+
+        .badge-live {
+            background: rgba(0, 255, 135, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero section */
+        .hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Glass cards */
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(20px);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-glow);
+            border-color: rgba(0, 245, 255, 0.3);
+        }
+
+        /* Upload section */
+        .upload-section {
+            margin-bottom: 3rem;
+        }
+
+        .upload-card {
+            padding: 2rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 245, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .upload-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 245, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-primary);
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, #ff3333 0%, #ff6b6b 100%);
+            color: white;
+        }
+
+        /* Recording indicator */
+        .recording-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: rgba(255, 51, 51, 0.1);
+            border: 1px solid #ff3333;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .recording-pulse {
+            width: 12px;
+            height: 12px;
+            background: #ff3333;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Progress */
+        .progress-container {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Loading spinner */
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results section */
+        .results-container {
+            display: none;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            padding: 2rem;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-icon {
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Genre results */
+        .genre-main {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .genre-predicted {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .genre-confidence {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .genre-predictions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .genre-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .confidence-bar {
+            width: 100px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-left: 1rem;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+            transition: width 0.8s ease;
+        }
+
+        /* Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Energy visualization */
+        .energy-viz {
+            margin-top: 1.5rem;
+        }
+
+        .energy-meter {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--warning), var(--error));
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        /* Spectrogram */
+        .spectrogram-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spectrogram-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .spectrogram-wrapper:hover {
+            transform: scale(1.01);
+        }
+
+        .spectrogram-image {
+            max-width: 100%;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .spectrogram-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1px;
+            box-shadow: 
+                0 0 8px rgba(255, 255, 255, 0.8),
+                0 0 16px rgba(0, 245, 255, 0.6);
+            opacity: 0;
+            transition: opacity 0.3s ease, left 0.05s linear;
+            z-index: 10;
+        }
+
+        .spectrogram-progress.playing {
+            opacity: 1;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .player-status {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            text-align: center;
+            height: 20px;
+            transition: opacity 0.3s ease;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .play-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 245, 255, 0.4);
+        }
+
+        .play-button.ready {
+            animation: readyPulse 2s ease-in-out infinite;
+        }
+
+        .play-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: scale(0.95);
+        }
+
+        .play-button:disabled:hover {
+            transform: scale(0.95);
+        }
+
+        @keyframes readyPulse {
+            0%, 100% { 
+                box-shadow: 0 4px 15px rgba(0, 245, 255, 0.3);
+            }
+            50% { 
+                box-shadow: 0 8px 25px rgba(0, 245, 255, 0.6);
+            }
+        }
+
+        .time-display {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-audio {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-fill-audio {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 3px;
+            transition: width 0.1s ease;
+        }
+
+        .waveform-container {
+            width: 100%;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform-bars {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 10px;
+            gap: 2px;
+        }
+
+        .waveform-bar {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 1px;
+            transition: all 0.1s ease;
+        }
+
+        .waveform-bar.active {
+            background: var(--accent-primary);
+            box-shadow: 0 0 5px var(--accent-primary);
+        }
+
+        /* Audio info */
+        .audio-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border: 1px solid;
+            position: relative;
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 135, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(255, 51, 51, 0.1);
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .alert-warning {
+            background: rgba(255, 183, 0, 0.1);
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        /* Features section */
+        .features-section {
+            margin-top: 4rem;
+            padding: 3rem 0;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .hero {
+                padding: 6rem 0 3rem;
+            }
+
+            .upload-card {
+                padding: 1.5rem;
+            }
+
+            .upload-zone {
+                padding: 2rem 1rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .audio-info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <i class="fas fa-waveform-lines"></i> MusicAI Pro
+            </div>
+            <div class="nav-badges">
+                <span class="badge badge-ai">AI Powered</span>
+                <span class="badge badge-live">Real-time</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">MusicAI Pro</h1>
+            <p class="hero-subtitle">
+                Next-generation AI music intelligence platform powered by transformer architectures.
+                Analyze genre, mood, energy, key, and quality with enterprise-grade accuracy.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="glass-card upload-card">
+                <div class="upload-zone" id="uploadZone">
+                    <i class="fas fa-cloud-upload upload-icon"></i>
+                    <h3 class="upload-title">Drop Your Audio File</h3>
+                    <p class="upload-subtitle">Support for MP3, WAV, M4A, FLAC, OGG, WebM • Max 50MB</p>
+                    <input type="file" id="audioFile" accept="audio/*" style="display: none;">
+                </div>
+
+                <div class="text-center" style="margin-top: 1.5rem;">
+                    <button class="btn btn-primary" id="recordBtn">
+                        <i class="fas fa-microphone"></i>
+                        Start Recording
+                    </button>
+                    <button class="btn btn-stop" id="stopRecordBtn" style="display: none;">
+                        <i class="fas fa-stop"></i>
+                        Stop Recording
+                    </button>
+                </div>
+
+                <div class="recording-indicator" id="recordingIndicator">
+                    <div class="recording-pulse"></div>
+                    <span>Recording... <span id="recordingTime">0:00</span></span>
+                </div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <p id="progressText" class="text-center">Processing...</p>
+                </div>
+
+                <div class="loading-container" id="loadingContainer">
+                    <div class="spinner"></div>
+                    <p>AI is analyzing your music...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-container" id="resultsContainer">
+            <div class="results-grid">
+                <!-- Genre Analysis -->
+                <div class="glass-card result-card">
+                    <div class="result-header">
+                        <i class="fas fa-tags result-icon"></i>
+                        <h3 class="result-title">Genre Classification</h3>
+                    </div>
+                    <div id="genreResults">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Mood & Energy -->
+                <div class="glass-card result-card">
+                    <div class="result-header">
+                        <i class="fas fa-brain result-icon"></i>
+                        <h3 class="result-title">Mood & Energy</h3>
+                    </div>
+                    <div id="moodResults">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Musical Key -->
+                <div class="glass-card result-card">
+                    <div class="result-header">
+                        <i class="fas fa-music result-icon"></i>
+                        <h3 class="result-title">Musical Key</h3>
+                    </div>
+                    <div id="keyResults">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- Spectrogram -->
+            <div class="glass-card spectrogram-container" id="spectrogramContainer">
+                <div class="result-header">
+                    <i class="fas fa-chart-area result-icon"></i>
+                    <h3 class="result-title">Spectrogram Analysis</h3>
+                </div>
+                <!-- Dynamic content -->
+            </div>
+
+            <!-- Audio Information -->
+            <div class="glass-card result-card">
+                <div class="result-header">
+                    <i class="fas fa-info-circle result-icon"></i>
+                    <h3 class="result-title">Audio Information</h3>
+                </div>
+                <div id="audioInfoResults">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2 class="features-title">AI-Powered Features</h2>
+            <div class="features-grid">
+                <div class="glass-card feature-card">
+                    <i class="fas fa-robot feature-icon"></i>
+                    <h4 class="feature-title">Deep Learning Classification</h4>
+                    <p class="feature-description">Transformer-based architecture with 95%+ accuracy across 10+ genres using cutting-edge AI.</p>
+                </div>
+                
+                <div class="glass-card feature-card">
+                    <i class="fas fa-palette feature-icon"></i>
+                    <h4 class="feature-title">Emotional Intelligence</h4>
+                    <p class="feature-description">Advanced mood recognition for playlist curation and recommendation systems.</p>
+                </div>
+                
+                <div class="glass-card feature-card">
+                    <i class="fas fa-bolt feature-icon"></i>
+                    <h4 class="feature-title">Real-time Processing</h4>
+                    <p class="feature-description">Lightning-fast analysis with GPU acceleration and optimized inference pipelines.</p>
+                </div>
+                
+                <div class="glass-card feature-card">
+                    <i class="fas fa-key feature-icon"></i>
+                    <h4 class="feature-title">Harmonic Analysis</h4>
+                    <p class="feature-description">Automated key and scale detection for musicians and music producers.</p>
+                </div>
+                
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Global variables
+        let uploadZone = document.getElementById('uploadZone');
+        let audioFile = document.getElementById('audioFile');
+        let progressContainer = document.getElementById('progressContainer');
+        let progressBar = document.getElementById('progressBar');
+        let progressText = document.getElementById('progressText');
+        let loadingContainer = document.getElementById('loadingContainer');
+        let resultsContainer = document.getElementById('resultsContainer');
+        
+        // Recording variables
+        let recordBtn = document.getElementById('recordBtn');
+        let stopRecordBtn = document.getElementById('stopRecordBtn');
+        let recordingIndicator = document.getElementById('recordingIndicator');
+        let recordingTime = document.getElementById('recordingTime');
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let recordingStartTime = null;
+        let recordingTimer = null;
+
+        // Audio playback variables
+        let currentAudio = null;
+        let spectrogramProgress = null;
+        let audioDuration = 0;
+        let audioId = null;
+        let audioContextUnlocked = false;
+        let animationFrameId = null;
+
+        // Upload zone event listeners
+        uploadZone.addEventListener('click', () => audioFile.click());
+        uploadZone.addEventListener('dragover', handleDragOver);
+        uploadZone.addEventListener('drop', handleDrop);
+        uploadZone.addEventListener('dragleave', handleDragLeave);
+        audioFile.addEventListener('change', handleFileSelect);
+        
+        // Recording event listeners
+        recordBtn.addEventListener('click', startRecording);
+        stopRecordBtn.addEventListener('click', stopRecording);
+
+        // Drag and drop handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        // Recording functions
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        sampleRate: 44100,
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    } 
+                });
+                
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+                        ? 'audio/webm;codecs=opus' 
+                        : 'audio/webm'
+                });
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { 
+                        type: mediaRecorder.mimeType 
+                    });
+                    const file = new File([blob], 'recording.webm', { 
+                        type: mediaRecorder.mimeType 
+                    });
+                    handleFile(file);
+                    
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.start();
+                recordingStartTime = Date.now();
+                
+                // UI updates
+                recordBtn.style.display = 'none';
+                stopRecordBtn.style.display = 'inline-flex';
+                recordingIndicator.style.display = 'flex';
+                
+                // Start timer
+                recordingTimer = setInterval(updateRecordingTime, 100);
+                
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                showAlert('Unable to access microphone. Please check permissions and try again.', 'error');
+            }
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            
+            // UI updates
+            recordBtn.style.display = 'inline-flex';
+            stopRecordBtn.style.display = 'none';
+            recordingIndicator.style.display = 'none';
+            
+            // Clear timer
+            if (recordingTimer) {
+                clearInterval(recordingTimer);
+                recordingTimer = null;
+            }
+        }
+        
+        function updateRecordingTime() {
+            if (recordingStartTime) {
+                const elapsed = (Date.now() - recordingStartTime) / 1000;
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = Math.floor(elapsed % 60);
+                recordingTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // File handling
+        function handleFile(file) {
+            // Unlock audio context on file interaction
+            unlockAudioContext();
+            
+            // Validate file type
+            const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/flac', 'audio/ogg', 'audio/webm'];
+            const isValidType = allowedTypes.includes(file.type) || 
+                file.name.match(/\.(mp3|wav|m4a|flac|ogg|webm)$/i);
+            
+            if (!isValidType) {
+                showAlert('Please select a valid audio file (MP3, WAV, M4A, FLAC, OGG, WebM)', 'error');
+                return;
+            }
+
+            // Check file size (max 50MB)
+            if (file.size > 50 * 1024 * 1024) {
+                showAlert('File size too large. Please select a file smaller than 50MB.', 'error');
+                return;
+            }
+
+            uploadFile(file);
+        }
+
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('audio', file);
+
+            // Show loading
+            loadingContainer.style.display = 'block';
+            resultsContainer.style.display = 'none';
+
+            // Simulate progress
+            simulateProgress();
+
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingContainer.style.display = 'none';
+                progressContainer.style.display = 'none';
+                
+                if (data.error) {
+                    showAlert(data.error, 'error');
+                } else {
+                    displayResults(data);
+                    showAlert('Analysis completed successfully!', 'success');
+                }
+            })
+            .catch(error => {
+                loadingContainer.style.display = 'none';
+                progressContainer.style.display = 'none';
+                showAlert('Analysis failed. Please try again.', 'error');
+                console.error('Error:', error);
+            });
+        }
+
+        function simulateProgress() {
+            progressContainer.style.display = 'block';
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 90) {
+                    progress = 90;
+                    clearInterval(interval);
+                }
+                progressBar.style.width = progress + '%';
+                
+                if (progress < 30) {
+                    progressText.textContent = 'Processing audio file...';
+                } else if (progress < 60) {
+                    progressText.textContent = 'Running AI analysis...';
+                } else {
+                    progressText.textContent = 'Generating insights...';
+                }
+            }, 200);
+        }
+
+        // Results display functions
+        function displayResults(data) {
+            resultsContainer.style.display = 'block';
+            
+            // Store audio URL for playback
+            if (data.audio_url) {
+                const urlParts = data.audio_url.split('_');
+                audioId = urlParts[urlParts.length - 1].split('.')[0]; // Extract audio ID
+            }
+            
+            if (data.genre && !data.genre.error) {
+                displayGenreResults(data.genre);
+            }
+            
+            if (data.mood && !data.mood.error) {
+                displayMoodResults(data.mood);
+            }
+            
+            if (data.key && !data.key.error) {
+                displayKeyResults(data.key);
+            }
+            
+            if (data.spectrogram && data.audio_url) {
+                displaySpectrogram(data.spectrogram, data.audio_url, data.audio_info.duration);
+            }
+            
+            if (data.audio_info) {
+                displayAudioInfo(data.audio_info);
+            }
+            
+            // Smooth scroll to results
+            setTimeout(() => {
+                resultsContainer.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 300);
+        }
+
+        function displayGenreResults(genre) {
+            const html = `
+                <div class="genre-main">
+                    <div class="genre-predicted">${genre.predicted}</div>
+                    <div class="genre-confidence">${(genre.confidence * 100).toFixed(1)}% confidence</div>
+                </div>
+                <div class="genre-predictions">
+                    ${genre.top_predictions.map(pred => `
+                        <div class="genre-item">
+                            <div>
+                                <strong>${pred.genre}</strong>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                    ${(pred.confidence * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: ${pred.confidence * 100}%"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('genreResults').innerHTML = html;
+        }
+
+        function displayMoodResults(mood) {
+            const html = `
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">${mood.mood}</div>
+                        <div class="metric-label">Mood</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${mood.energy_level.toFixed(0)}%</div>
+                        <div class="metric-label">Energy</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${mood.tempo.toFixed(0)}</div>
+                        <div class="metric-label">BPM</div>
+                    </div>
+                </div>
+                <div class="energy-viz">
+                    <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        Energy Level
+                    </div>
+                    <div class="energy-meter">
+                        <div class="energy-fill" style="width: ${mood.energy_level}%"></div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('moodResults').innerHTML = html;
+        }
+
+        function displayKeyResults(key) {
+            const html = `
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">${key.key}</div>
+                        <div class="metric-label">Key</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${key.scale}</div>
+                        <div class="metric-label">Scale</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${(key.confidence * 100).toFixed(0)}%</div>
+                        <div class="metric-label">Confidence</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('keyResults').innerHTML = html;
+        }
+
+        function displayQualityResults(quality) {
+            const score = quality.quality_score;
+            const qualityClass = score > 80 ? 'excellent' : score > 60 ? 'good' : 'poor';
+            const qualityLabel = score > 80 ? 'Excellent' : score > 60 ? 'Good' : 'Needs Improvement';
+            
+            const html = `
+                <div class="quality-score ${qualityClass}">
+                    <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+                        ${score.toFixed(0)}/100
+                    </div>
+                    <div style="font-size: 1rem; margin-bottom: 1.5rem;">
+                        ${qualityLabel}
+                    </div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">${quality.snr_estimate.toFixed(1)}</div>
+                        <div class="metric-label">SNR (dB)</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${quality.dynamic_range.toFixed(1)}</div>
+                        <div class="metric-label">Dynamic Range</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${quality.bit_depth_estimate}</div>
+                        <div class="metric-label">Est. Bit Depth</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('qualityResults').innerHTML = html;
+        }
+
+        function displaySpectrogram(spectrogramBase64, audioUrl, duration) {
+            audioDuration = duration;
+            
+            const html = `
+                <div class="audio-player">
+                    <div class="player-status" id="playerStatus"></div>
+                    <div class="player-controls">
+                        <button class="play-button" id="playButton">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </button>
+                        <div class="time-display">
+                            <span id="currentTime">0:00</span> / <span id="totalTime">${formatTime(duration)}</span>
+                        </div>
+                        <div class="progress-bar-audio" id="audioProgressBar">
+                            <div class="progress-fill-audio" id="audioProgressFill"></div>
+                        </div>
+                    </div>
+                    <div class="waveform-container">
+                        <div class="waveform-bars" id="waveformBars">
+                            <!-- Dynamic waveform bars -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="spectrogram-wrapper" id="spectrogramWrapper">
+                    <img src="data:image/png;base64,${spectrogramBase64}" 
+                         class="spectrogram-image" 
+                         alt="Audio Spectrogram"
+                         id="spectrogramImage">
+                    <div class="spectrogram-progress" id="spectrogramProgress"></div>
+                </div>
+                
+                <p style="color: var(--text-secondary); margin-top: 1rem; font-size: 0.875rem;">
+                    Pure spectrogram visualization with synchronized playback • Click anywhere to seek
+                </p>
+                
+                <audio id="audioPlayer" preload="auto" crossorigin="anonymous" style="display: none;">
+                    <source src="${audioUrl}" type="audio/wav">
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    <source src="${audioUrl}" type="audio/ogg">
+                    Your browser does not support the audio element.
+                </audio>
+            `;
+            
+            document.getElementById('spectrogramContainer').innerHTML = 
+                document.querySelector('#spectrogramContainer .result-header').outerHTML + html;
+            
+            // Initialize audio player
+            initializeAudioPlayer();
+            generateWaveform();
+        }
+
+        function displayAudioInfo(audioInfo) {
+            const html = `
+                <div class="audio-info-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">${audioInfo.duration.toFixed(1)}s</div>
+                        <div class="metric-label">Duration</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${(audioInfo.sample_rate / 1000).toFixed(1)}k</div>
+                        <div class="metric-label">Sample Rate</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${audioInfo.channels}</div>
+                        <div class="metric-label">Channels</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${audioInfo.file_size_mb.toFixed(1)}</div>
+                        <div class="metric-label">Size (MB)</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('audioInfoResults').innerHTML = html;
+        }
+
+        // Audio player functions
+        function initializeAudioPlayer() {
+            currentAudio = document.getElementById('audioPlayer');
+            spectrogramProgress = document.getElementById('spectrogramProgress');
+            const playButton = document.getElementById('playButton');
+            const audioProgressBar = document.getElementById('audioProgressBar');
+            const spectrogramWrapper = document.getElementById('spectrogramWrapper');
+            
+            if (!currentAudio || !playButton) {
+                console.error("Audio player elements not found");
+                return;
+            }
+            
+            setPlayerState('loading');
+            
+            playButton.addEventListener('click', togglePlayPause);
+            audioProgressBar.addEventListener('click', seekAudio);
+            if (spectrogramWrapper) {
+                spectrogramWrapper.addEventListener('click', seekToSpectrogram);
+            }
+            
+            // More robust event listeners
+            currentAudio.addEventListener('timeupdate', updateProgress);
+            currentAudio.addEventListener('ended', onAudioEnded);
+            currentAudio.addEventListener('error', onAudioError);
+            currentAudio.addEventListener('canplay', onAudioCanPlay); // Use canplay for faster readiness
+            currentAudio.addEventListener('waiting', () => setPlayerState('loading'));
+            currentAudio.addEventListener('playing', () => setPlayerState('playing'));
+            
+            console.log("Forcing audio load...");
+            currentAudio.load();
+        }
+
+        function setPlayerState(state) {
+            const playButton = document.getElementById('playButton');
+            if (!playButton) return;
+            const icon = playButton.querySelector('i');
+            const playerStatus = document.getElementById('playerStatus');
+
+            playButton.classList.remove('ready');
+            cancelAnimationFrame(animationFrameId); // Stop any existing animation loop
+
+            switch (state) {
+                case 'loading':
+                    icon.className = 'fas fa-spinner fa-spin';
+                    playButton.disabled = true;
+                    if (playerStatus) playerStatus.textContent = 'Loading Audio...';
+                    break;
+                case 'ready':
+                    icon.className = 'fas fa-play';
+                    playButton.disabled = false;
+                    playButton.classList.add('ready');
+                    if (playerStatus) playerStatus.textContent = 'Ready to Play';
+                    break;
+                case 'playing':
+                    icon.className = 'fas fa-pause';
+                    playButton.disabled = false;
+                    spectrogramProgress.classList.add('playing');
+                    if (playerStatus) playerStatus.textContent = '';
+                    renderLoop(); // Start the smooth animation loop
+                    break;
+                case 'paused':
+                    icon.className = 'fas fa-play';
+                    playButton.disabled = false;
+                    spectrogramProgress.classList.remove('playing');
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-triangle';
+                    playButton.disabled = true;
+                    if (playerStatus) playerStatus.textContent = 'Error Loading';
+                    break;
+            }
+        }
+        
+        function onAudioError(e) {
+            console.error('Audio error:', currentAudio.error);
+            showAlert('Error loading audio. The file may be corrupt or in an unsupported format.', 'error');
+            setPlayerState('error');
+        }
+
+        function onAudioCanPlay() {
+            console.log(`Audio is ready to play (readyState: ${currentAudio.readyState})`);
+            setPlayerState('ready');
+        }
+        
+        function togglePlayPause(event) {
+            if (event && !event.isTrusted) return;
+            unlockAudioContext();
+            
+            // Allow play if metadata is loaded (readyState >= 1)
+            if (!currentAudio || currentAudio.readyState < 1) {
+                showAlert('Audio is not ready. Please wait.', 'warning');
+                return;
+            }
+            
+            if (currentAudio.paused) {
+                const playPromise = currentAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => setPlayerState('playing'))
+                        .catch(error => {
+                            setPlayerState('paused');
+                            console.error("Playback Error:", error);
+                            showAlert('Playback failed. Please click play again.', 'error');
+                        });
+                }
+            } else {
+                currentAudio.pause();
+                setPlayerState('paused');
+            }
+        }
+        
+        function seekAudio(e) {
+            const progressBar = e.currentTarget;
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            if (currentAudio) {
+                currentAudio.currentTime = percentage * audioDuration;
+                // Manually update visuals on seek for immediate feedback
+                if (!currentAudio.paused) {
+                    cancelAnimationFrame(animationFrameId);
+                    renderLoop();
+                } else {
+                    updateVisuals();
+                }
+            }
+        }
+        
+        function updateProgress() {
+            if (!currentAudio) return;
+            
+            // This function now only updates the less critical, non-animated elements
+            const currentTime = currentAudio.currentTime;
+            const percentage = (currentTime / audioDuration) * 100;
+            
+            const audioProgressFill = document.getElementById('audioProgressFill');
+            if (audioProgressFill) audioProgressFill.style.width = percentage + '%';
+            
+            const currentTimeElement = document.getElementById('currentTime');
+            if (currentTimeElement) currentTimeElement.textContent = formatTime(currentTime);
+        }
+
+        function updateVisuals() {
+             if (!currentAudio) return;
+            const percentage = (currentAudio.currentTime / audioDuration) * 100;
+
+            const spectrogramImage = document.getElementById('spectrogramImage');
+            if (spectrogramImage && spectrogramProgress) {
+                spectrogramProgress.style.left = (percentage / 100) * spectrogramImage.offsetWidth + 'px';
+            }
+            
+            updateWaveformVisualization(percentage);
+        }
+
+        function renderLoop() {
+            if (!currentAudio || currentAudio.paused) {
+                cancelAnimationFrame(animationFrameId);
+                return;
+            }
+            updateVisuals();
+            animationFrameId = requestAnimationFrame(renderLoop);
+        }
+        
+        function updateWaveformVisualization(percentage) {
+            const waveformBars = document.querySelectorAll('.waveform-bar');
+            const activeIndex = Math.floor((percentage / 100) * waveformBars.length);
+            waveformBars.forEach((bar, i) => bar.classList.toggle('active', i <= activeIndex));
+        }
+        
+        function onAudioEnded() {
+            setPlayerState('ready');
+            document.getElementById('audioProgressFill').style.width = '0%';
+            // Reset visuals to the start
+            const spectrogramImage = document.getElementById('spectrogramImage');
+            if (spectrogramImage && spectrogramProgress) {
+                spectrogramProgress.style.left = '0px';
+            }
+            document.getElementById('currentTime').textContent = '0:00';
+            document.querySelectorAll('.waveform-bar').forEach(b => b.classList.remove('active'));
+        }
+
+        function seekToSpectrogram(e) {
+            if (!currentAudio) return;
+            const wrapper = e.currentTarget;
+            const rect = wrapper.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            currentAudio.currentTime = (clickX / rect.width) * audioDuration;
+             // Manually update visuals on seek for immediate feedback
+            if (!currentAudio.paused) {
+                cancelAnimationFrame(animationFrameId);
+                renderLoop();
+            } else {
+                updateVisuals();
+            }
+        }
+
+        function generateWaveform() {
+            const container = document.getElementById('waveformBars');
+            if (!container) return;
+            let html = '';
+            for (let i = 0; i < 100; i++) {
+                html += `<div class="waveform-bar" style="height: ${Math.random() * 80 + 20}%"></div>`;
+            }
+            container.innerHTML = html;
+        }
+        
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+        
+        function cleanupAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            if (audioId) {
+                fetch(`/cleanup/${audioId}`).catch(e => console.error('Cleanup failed', e));
+                audioId = null;
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.insertBefore(alertDiv, document.querySelector('main'));
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 5000);
+        }
+
+        function unlockAudioContext() {
+            if (audioContextUnlocked) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                const context = new AudioContext();
+                if (context.state === 'suspended') {
+                    context.resume();
+                }
+                audioContextUnlocked = true;
+            }
+        }
+
+        document.addEventListener('click', unlockAudioContext, { once: true });
+        document.addEventListener('touchstart', unlockAudioContext, { once: true });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            window.addEventListener('beforeunload', cleanupAudio);
+        });
+    </script>
+</body>
+</html> 

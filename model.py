@@ -49,8 +49,22 @@ class WhisperAudioClassifier(nn.Module):
         if x.dim() == 4 and x.shape[1] == 1:
             x = x.squeeze(1)
 
-        # Pass the input through the modified encoder.
-        x = self.encoder(x)
+        # Process through conv layers first (like Whisper does)
+        x = torch.nn.functional.gelu(self.encoder.conv1(x))
+        x = torch.nn.functional.gelu(self.encoder.conv2(x))
+        
+        # Permute to (batch, seq_len, d_model) for transformer
+        x = x.permute(0, 2, 1)
+        
+        # Add positional embedding
+        x = x + self.encoder.positional_embedding[:x.shape[1], :]
+        
+        # Pass through transformer blocks
+        for block in self.encoder.blocks:
+            x = block(x)
+        
+        # Apply final layer norm
+        x = self.encoder.ln_post(x)
         
         # Average pooling over the sequence dimension to get a fixed-size vector.
         x = torch.mean(x, dim=1)

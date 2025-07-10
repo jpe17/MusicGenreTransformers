@@ -6,14 +6,15 @@ from dataloader import MusicGenreDataset
 import argparse
 import torchvision.transforms.v2 as transforms
 import matplotlib.pyplot as plt
+import whisper
 
-def preprocess_audio(audio_path, sample_rate=22050, n_mels=80, chunk_duration=30, save_spectrogram=False):
+def preprocess_audio(audio_path, sample_rate=16000, n_mels=80, chunk_duration=30, save_spectrogram=False):
     """
     Loads a long audio file, splits it into 30-second chunks, and processes
-    each chunk into a mel spectrogram tensor that replicates the training data processing.
+    each chunk into a mel spectrogram tensor using Whisper's preprocessing.
     Returns a batch of spectrogram tensors.
     """
-    # 1. Load audio file, resampling to 22050 Hz and ensuring it's mono
+    # 1. Load audio file, resampling to 16000 Hz (Whisper's requirement) and ensuring it's mono
     y, sr = librosa.load(audio_path, sr=sample_rate, mono=True)
     
     # 2. Split into chunks of `chunk_duration`
@@ -32,24 +33,26 @@ def preprocess_audio(audio_path, sample_rate=22050, n_mels=80, chunk_duration=30
 
     print(f"Audio split into {len(chunks)} chunk(s) of {chunk_duration} seconds.")
 
-    # 3. Define the processing pipeline to match dataloader.py
+    # 3. Define the processing pipeline to match dataloader.py (Whisper dimensions)
     batch_tensors = []
     transform = transforms.Compose([
         transforms.ToImage(),
         transforms.ToDtype(torch.float32, scale=True),
         transforms.Grayscale(num_output_channels=1),
-        transforms.Resize((80, 3000), antialias=True),
+        transforms.Resize((80, 1500), antialias=True),
     ])
 
     for i, chunk in enumerate(chunks):
-        # 4. Create mel spectrogram and convert to dB scale
-        mel_spectrogram = librosa.feature.melspectrogram(y=chunk, sr=sr, n_mels=n_mels)
-        log_mel_spectrogram = librosa.power_to_db(mel_spectrogram, ref=np.max)
+        # 4. Use Whisper's built-in mel spectrogram preprocessing (EXACT same as dataloader)
+        # Convert to float32 (Whisper requirement)
+        chunk = chunk.astype(np.float32)
+        log_mel_spectrogram = whisper.audio.log_mel_spectrogram(chunk, n_mels=n_mels)
         
-        # 5. Normalize to [0, 255] to simulate a PIL image, then expand to 3 channels
-        img = (log_mel_spectrogram - log_mel_spectrogram.min()) / (log_mel_spectrogram.max() - log_mel_spectrogram.min())
-        img = (img * 255).astype(np.uint8)
-        img = np.stack([img, img, img], axis=-1) # Match Grayscale's input expectation
+        # 5. Convert to numpy and normalize exactly like dataloader
+        mel_np = log_mel_spectrogram.numpy()
+        normalized = (mel_np - mel_np.min()) / (mel_np.max() - mel_np.min())
+        img = (normalized * 255).astype(np.uint8)
+        img = np.stack([img, img, img], axis=-1)
 
         # 6. Apply the full transform pipeline
         mel_spectrogram_tensor = transform(img)
@@ -65,11 +68,12 @@ def preprocess_audio(audio_path, sample_rate=22050, n_mels=80, chunk_duration=30
     final_batch = torch.stack(batch_tensors)
 
     print("\n" + "="*50)
-    print("        INSPECTING PREDICTION SPECTROGRAM")
+    print("     WHISPER-COMPATIBLE SPECTROGRAM INSPECTION")
     print("="*50 + "\n")
     if final_batch.nelement() > 0:
         first_tensor = final_batch[0]
         print(f"Tensor shape: {first_tensor.shape}")
+        print(f"Expected shape: torch.Size([1, 80, 1500]) (Whisper compatible)")
         print(f"Tensor dtype: {first_tensor.dtype}")
         print(f"Tensor min value: {first_tensor.min():.6f}")
         print(f"Tensor max value: {first_tensor.max():.6f}")
@@ -129,8 +133,8 @@ if __name__ == '__main__':
     # --- Load Class Names ---
     # We instantiate the dataset object just to get the class mapping
     print("Loading class names...")
-    # Any split will do, it's just to get metadata
-    temp_dataset = MusicGenreDataset(split='test')
+    # GTZAN only has 'train' split, so we use that for metadata
+    temp_dataset = MusicGenreDataset(split='train')
     CLASS_NAMES = temp_dataset.class_names
     NUM_CLASSES = temp_dataset.num_classes
     del temp_dataset

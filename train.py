@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+import torch.utils.data
 from dataloader import MusicGenreDataset
 from model import WhisperAudioClassifier
 from tqdm import tqdm
@@ -139,9 +140,9 @@ def train(model, train_loader, val_loader, epochs, learning_rate, device, model_
 
 if __name__ == '__main__':
     # --- Configuration ---
-    EPOCHS = 5
-    LEARNING_RATE = 0.001
-    BATCH_SIZE = 16 # Lowered batch size for streaming and memory constraints
+    EPOCHS = 10
+    LEARNING_RATE = 0.0001
+    BATCH_SIZE = 8  # Further reduced for Whisper + raw audio processing
     MODEL_SAVE_PATH = 'music_genre_classifier.pth'
     
     # --- W&B Initialization ---
@@ -161,16 +162,35 @@ if __name__ == '__main__':
 
     # --- Datasets and Dataloaders ---
     print("\nLoading datasets...")
-    train_dataset = MusicGenreDataset(split='train', augment=True)
-    val_dataset = MusicGenreDataset(split='validation')
-    test_dataset = MusicGenreDataset(split='test')
+    # GTZAN only has 'train' split, so we'll create our own splits
+    full_dataset = MusicGenreDataset(split='train', augment=False)
+    
+    # Split GTZAN into train/val/test (70/15/15)
+    total_size = len(full_dataset)
+    train_size = int(0.7 * total_size)
+    val_size = int(0.15 * total_size)
+    test_size = total_size - train_size - val_size
+    
+    train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(
+        full_dataset, [train_size, val_size, test_size],
+        generator=torch.Generator().manual_seed(42)
+    )
+    
+    # Create augmented training dataset separately
+    train_augmented = MusicGenreDataset(split='train', augment=True)
+    # Use the same indices as train_dataset for consistency
+    train_dataset = torch.utils.data.Subset(train_augmented, train_dataset.indices)
 
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, num_workers=4, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, num_workers=4, pin_memory=True)
-    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, num_workers=4)
+    # Set pin_memory and num_workers based on device
+    use_pin_memory = device.type == 'cuda'
+    num_workers = 4 if device.type == 'cuda' else 0  # Avoid multiprocessing issues on CPU
+    
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, num_workers=num_workers, pin_memory=use_pin_memory)
+    val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, num_workers=num_workers, pin_memory=use_pin_memory)
+    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, num_workers=num_workers, pin_memory=use_pin_memory)
 
     # --- Model ---
-    model = WhisperAudioClassifier(num_classes=train_dataset.num_classes, device=device)
+    model = WhisperAudioClassifier(num_classes=full_dataset.num_classes, device=device)
     wandb.watch(model, log="all", log_freq=100)
     
     # --- Training ---
@@ -179,6 +199,6 @@ if __name__ == '__main__':
     
     # --- Evaluation ---
     print("\nStarting evaluation on the test set...")
-    evaluate(trained_model, test_loader, device, train_dataset.class_names)
+    evaluate(trained_model, test_loader, device, full_dataset.class_names)
     print("\nProcess finished.") 
     wandb.finish() 
