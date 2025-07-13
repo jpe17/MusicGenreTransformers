@@ -125,7 +125,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # --- Configuration ---
-    MODEL_PATH = 'music_genre_classifier.pth'
+    MODEL_PATH = 'backend/music_genre_classifier.pth'
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")

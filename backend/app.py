@@ -26,7 +26,7 @@ import time
 from pydub import AudioSegment
 import shutil
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../frontend/templates', static_folder='../frontend/static')
 app.config['SECRET_KEY'] = 'musicai_secret_key'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max file size
 
@@ -51,7 +51,7 @@ def load_model():
     # Load model
     model = WhisperAudioClassifier(num_classes=num_classes, device=device)
     try:
-        model.load_state_dict(torch.load('music_genre_classifier.pth', map_location=device))
+        model.load_state_dict(torch.load('backend/music_genre_classifier.pth', map_location=device))
         model.eval()
         print("Model loaded successfully!")
     except FileNotFoundError:

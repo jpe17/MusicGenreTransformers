@@ -143,7 +143,7 @@ if __name__ == '__main__':
     EPOCHS = 100
     LEARNING_RATE = 0.0001
     BATCH_SIZE = 8  # Further reduced for Whisper + raw audio processing
-    MODEL_SAVE_PATH = 'music_genre_classifier.pth'
+    MODEL_SAVE_PATH = 'backend/music_genre_classifier.pth'
     
     # --- W&B Initialization ---
     config = {
